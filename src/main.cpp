@@ -2,14 +2,14 @@
 /**
  * 
  * State topics:
- *     /device/<device_name>/state/temperature
- *     /device/<device_name>/state/relay
- *     /device/<device_name>/state/setpoint
- *     /device/<device_name>/state/settings
+ *     /device/<node_name>/state/temperature
+ *     /device/<node_name>/state/relay
+ *     /device/<node_name>/state/setpoint
+ *     /device/<node_name>/state/settings
  * 
  * Control topics:
- *     /device/<device_name>/control/setpoint
- *     /device/<device_name>/control/settings
+ *     /device/<node_name>/control/setpoint
+ *     /device/<node_name>/control/settings
  * 
  */
 
@@ -106,14 +106,14 @@ void mqtt_reconnect() {
 
         // Subscribe to setpoint control topic
         {
-            String topic = String(mqtt_root) + "/" + device_name + "/control/setpoint";
+            String topic = String(mqtt_root) + "/" + node_name + "/control/setpoint";
             mqttClient.subscribe(topic.c_str(), 1);
             Log.notice(F("Subscribed to control topic %s " CR), topic.c_str());
         }
 
         // Subscribe to settings control topic
         {
-            String topic = String(mqtt_root) + "/" + device_name + "/control/settings";
+            String topic = String(mqtt_root) + "/" + node_name + "/control/settings";
             mqttClient.subscribe(topic.c_str(), 1);
             Log.notice(F("Subscribed to control topic %s " CR), topic.c_str());
         }
@@ -362,7 +362,7 @@ float get_temp_stddev() {
 
 void publishTemperature() {
 
-    String topic = String(mqtt_root) + "/" + device_name + "/state/temperature";
+    String topic = String(mqtt_root) + "/" + node_name + "/state/temperature";
 
     JsonDocument doc;
     doc["current"] = normalize_temp(temp_current, "C", temp_unit);
@@ -383,7 +383,7 @@ void publishTemperature() {
 
 void publishRelay() {
 
-    String topic = String(mqtt_root) + "/" + device_name + "/state/relay";
+    String topic = String(mqtt_root) + "/" + node_name + "/state/relay";
 
     JsonDocument doc;
     doc["value"] = digitalRead(RELAY_PIN) == RELAY_ON ? 1 : 0;
@@ -401,7 +401,7 @@ void publishRelay() {
 
 void publishSetpoint() {
 
-    String topic = String(mqtt_root) + "/" + device_name + "/state/setpoint";
+    String topic = String(mqtt_root) + "/" + node_name + "/state/setpoint";
 
     JsonDocument doc;
     doc["value"] = normalize_temp(temp_setpoint, "C", temp_unit);
@@ -420,7 +420,7 @@ void publishSetpoint() {
 
 void publishSettings() {
 
-    String topic = String(mqtt_root) + "/" + device_name + "/state/settings";
+    String topic = String(mqtt_root) + "/" + node_name + "/state/settings";
 
     JsonDocument doc;
     doc["unit"] = temp_unit;
@@ -564,7 +564,7 @@ void mqtt_callback(char *topic, byte *message, unsigned int length)
     Log.info(F("Message arrived on topic: %s length: %d" CR), topic, length);
 
     String topicStr(topic);
-    String topicPrefix = String(mqtt_root) + "/" + device_name + "/control/";
+    String topicPrefix = String(mqtt_root) + "/" + node_name + "/control/";
     if (topicStr.indexOf(topicPrefix) != 0) {
         Log.warning(F("Unrecognized topic: %s" CR), topicStr.c_str());
         return;

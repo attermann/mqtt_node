@@ -31,6 +31,6 @@ const char *mqtt_password = STR(MQTT_PASSWORD);
 const char *mqtt_root = STR(MQTT_ROOT);
 #endif
 
-#ifdef DEVICE_NAME
-const char *device_name = STR(DEVICE_NAME);
+#ifdef NODE_NAME
+const char *node_name = STR(NODE_NAME);
 #endif
